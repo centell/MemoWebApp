@@ -2,6 +2,7 @@
 
 dev notes
  - firebase 를 이용하여 메모 기능을 구현
+ - demo page : https://memowebapp-59859.firebaseapp.com
 
 1. 인증 기능 구현
 2. 로그인
