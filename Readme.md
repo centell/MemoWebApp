@@ -1,6 +1,7 @@
 # MemoWebApp
 
 dev notes
+ - firebase 를 이용하여 메모 기능을 구현
 
 1. 인증 기능 구현
 2. 로그인
