@@ -1,64 +1,70 @@
 <!DOCTYPE html>
-  <html>
-    <head>
-      <!--Import Google Icon Font-->
-      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-      <!--Import materialize.css-->
-      <!-- Compiled and minified CSS -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+<html>
 
-      <!--Let browser know website is optimized for mobile-->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <style>
-          ::-webkit-scrollbar {
-              display:none;
-          }
-          .collection { cursor: pointer;}
-        </style>
-    </head>
+<head>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
 
-    <body>
-      <div class="row">
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        .collection {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="row">
         <div class="col s3" style="padding:0; margin:0; overflow-y:auto; overflow-x:hidden; height:1080px; -ms-overflow-style: none;">
-          <!-- Grey navigation panel -->
-          <ul class="collection"  style="padding:0; margin:0;"></ul>
+            <!-- Grey navigation panel -->
+            <ul class="collection" style="padding:0; margin:0;"></ul>
         </div>
 
-    <div class="col s9" style="padding:0; margin:0; max-height:1080px;">
-      <!-- Teal page content  -->
-      <nav>
-        <div class="nav-wrapper">
-          <div class="col s12">
-            <a href="#!" class="breadcrumb"><span id="modifyDate"></span></a>
+        <div class="col s9" style="padding:0; margin:0; max-height:1080px;">
+            <!-- Teal page content  -->
+            <nav>
+                <div class="nav-wrapper">
+                    <div class="col s12">
+                        <a href="#!" class="breadcrumb"><span id="modifyDate"></span></a>
 
-          </div>
+                    </div>
+                </div>
+            </nav>
+
+            <textarea style="height:1000px;" class="textarea" width="100%" rows="1000" placeholder="새로운 메모를 입력해보세요^^"></textarea>
         </div>
-      </nav>
 
-      <textarea style="height:1000px;" class="textarea" width="100%" rows="1000" placeholder="새로운 메모를 입력해보세요^^"></textarea>
+        <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+            <a class="btn-floating btn-large waves-effect waves-light red" onclick="initMemo()"><i class="material-icons">add</i></a>
+        </div>
+
+        <div class="preloader-wrapper big active" style="position:absolute; z-index:1000; left:50%; top:50%; display:none;">
+            <div class="spinner-layer spinner-blue-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
-        <a class="btn-floating btn-large waves-effect waves-light red" onclick="initMemo()"><i class="material-icons">add</i></a>
-    </div>
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 
-    <div class="preloader-wrapper big active" style="position:absolute; z-index:1000; left:50%; top:50%; display:none;">
-        <div class="spinner-layer spinner-blue-only">
-          <div class="circle-clipper left">
-            <div class="circle"></div>
-          </div><div class="gap-patch">
-            <div class="circle"></div>
-          </div><div class="circle-clipper right">
-            <div class="circle"></div>
-          </div>
-        </div>
-      </div>
-  </div>
-
-      <!--Import jQuery before materialize.js-->
-      <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
 
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
@@ -66,10 +72,10 @@
         // Mark : - variables
         var auth, // 인증
             database, // 데이터베이스
-            userInfo,  // 사용자 정보
+            userInfo, // 사용자 정보
             selectedKey // 메모 리스트를 클릭했을 때 해당 메모의 key값을 얻기 위한 전역변수
 
-            ;
+        ;
 
         // Mark : - Initialize Firebase
         var config = {
@@ -91,7 +97,7 @@
         // Mark - Logics
         var authProvider = new firebase.auth.GoogleAuthProvider();
 
-        auth.onAuthStateChanged(function(user){
+        auth.onAuthStateChanged(function(user) {
             if (user) {
                 // user 인증값이 정상 : 인증 성공
                 console.log('auth success');
@@ -112,10 +118,10 @@
         // 메모 리스트를 가져오는 함수
         function getMemoList() {
             var memoRef = database.ref('memos/' + userInfo.uid) // memos 에 있는 uid에 접근하겠다는 의미
-            memoRef.on('child_added', onChildAdded ); // 내용이 추가되었을 떄
-            memoRef.on('child_changed', function(data){ //내용이 변경되었을 때
-                console.log( data.key ); // 내용이 바뀌었을 때 메모 리스트의 값을 변경하려면 이 키를 갖는 li를 수정해주면 됨
-                console.log( data.val() );
+            memoRef.on('child_added', onChildAdded); // 내용이 추가되었을 떄
+            memoRef.on('child_changed', function(data) { //내용이 변경되었을 때
+                console.log(data.key); // 내용이 바뀌었을 때 메모 리스트의 값을 변경하려면 이 키를 갖는 li를 수정해주면 됨
+                console.log(data.val());
 
                 var key = data.key;
                 var txt = data.val().txt;
@@ -156,24 +162,24 @@
             var firstTxt = txt.substr(0, 1); //첫 번째 글자를 가져옴
 
             var html =
-             "<li id='"+key+"' class=\"collection-item avatar\" onclick=\"getDataOne(this.id);\" >" +
-             "<i class=\"material-icons circle red\">" + firstTxt + "</i>" + //아이콘 - 첫 번째 글짜로 아이콘을 만듬
-             "<span class=\"title\">" + title + "</span>" + // 제목
-             "<p class='txt'>" + txt + "<br>" +    // 내용
-             "</p>" +
-             "<a href=\"#!\" onclick=\"deleteData('"+key+"')\" class=\"secondary-content\"><i class=\"material-icons\">delete</i></a>"+
-             "</li>";
+                "<li id='" + key + "' class=\"collection-item avatar\" onclick=\"getDataOne(this.id);\" >" +
+                "<i class=\"material-icons circle red\">" + firstTxt + "</i>" + //아이콘 - 첫 번째 글짜로 아이콘을 만듬
+                "<span class=\"title\">" + title + "</span>" + // 제목
+                "<p class='txt'>" + txt + "<br>" + // 내용
+                "</p>" +
+                "<a href=\"#!\" onclick=\"deleteData('" + key + "')\" class=\"secondary-content\"><i class=\"material-icons\">delete</i></a>" +
+                "</li>";
 
-             $(".collection").append(html);
+            $(".collection").append(html);
         }
 
         //
         function getDataOne(key) {
             selectedKey = key; //
-            var memoRef = database.ref('memos/'+userInfo.uid+'/'+key).once('value').then(function(snapshot){
+            var memoRef = database.ref('memos/' + userInfo.uid + '/' + key).once('value').then(function(snapshot) {
 
                 //예외처리 : 삭제 후 snapshot.val() 이 null로 뜨는 문제
-                if(snapshot.val() == null){
+                if (snapshot.val() == null) {
                     return;
                 }
 
@@ -184,33 +190,33 @@
         }
 
         function deleteData(key) {
-            var memoRef = database.ref('memos/'+userInfo.uid+'/'+key);
+            var memoRef = database.ref('memos/' + userInfo.uid + '/' + key);
             memoRef.remove(); // firebase DB 삭제 함수 실행
-            $("#"+key).remove(); // jQuery 이용 해당 요소 삭제
+            $("#" + key).remove(); // jQuery 이용 해당 요소 삭제
             initMemo(); // 글쓰기창의 글자 삭제
         }
 
         // 받아온 값을 firebase 에 저장합니다.
         function saveData() {
-            var memoRef = database.ref('memos/'+userInfo.uid);
+            var memoRef = database.ref('memos/' + userInfo.uid);
             var txt = $(".textarea").val();
 
             // 아무 텍스트가 없으면 저장되지 않도록
-            if ( txt == ''){
+            if (txt == '') {
                 return;
             }
 
-            if ( selectedKey ) {
-                var memoRef = database.ref('memos/'+userInfo.uid+'/'+selectedKey);
+            if (selectedKey) {
+                var memoRef = database.ref('memos/' + userInfo.uid + '/' + selectedKey);
                 memoRef.update({
-                    txt : txt,
-                    updated_at : new Date().getTime()
+                    txt: txt,
+                    updated_at: new Date().getTime()
                 });
             } else {
                 // 선택된 키가 없다면 push 함수를 이용하여 저장
                 memoRef.push({
-                    txt : txt,
-                    created_at : new Date().getTime()
+                    txt: txt,
+                    created_at: new Date().getTime()
                 });
             }
 
@@ -227,13 +233,11 @@
 
         // 텍스트 에리어에 있는 값을 saveData()함수로 보냅니다.
         $(function() {
-            $(".textarea").blur(function(){
+            $(".textarea").blur(function() {
                 saveData();
             });
         });
-
-
-
     </script>
-    </body>
-  </html>
+</body>
+
+</html>
