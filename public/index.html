@@ -187,6 +187,7 @@
             var memoRef = database.ref('memos/'+userInfo.uid+'/'+key);
             memoRef.remove(); // firebase DB 삭제 함수 실행
             $("#"+key).remove(); // jQuery 이용 해당 요소 삭제
+            initMemo(); // 글쓰기창의 글자 삭제
         }
 
         // 받아온 값을 firebase 에 저장합니다.
@@ -220,6 +221,7 @@
         function initMemo() {
             $('textarea').val('');
             selectedKey = '';
+
         }
 
 
