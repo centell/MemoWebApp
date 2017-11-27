@@ -2,7 +2,7 @@
   <html>
     <head>
       <!--Import Google Icon Font-->
-      <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
       <!--Import materialize.css-->
       <!-- Compiled and minified CSS -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
@@ -94,7 +94,7 @@
         auth.onAuthStateChanged(function(user){
             if (user) {
                 // user 인증값이 정상 : 인증 성공
-                console.log('success');
+                console.log('auth success');
                 console.log(user); // 로그인한 유저의 정보를 가져옵니다.
                 // 메모 리스트 출력
                 userInfo = user;
@@ -102,7 +102,7 @@
 
             } else {
                 // 인증 실패
-                console.log('failed');
+                console.log('auth failed');
                 auth.signInWithPopup(authProvider); // 새 창으로 구글 로그인창을 띄웁니다.
             }
         });
