@@ -1,4 +1,6 @@
-# Devnotes
+# MemoWebApp
+
+dev notes
 
 1. 인증 기능 구현
 2. 로그인
