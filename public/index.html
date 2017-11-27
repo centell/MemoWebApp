@@ -63,9 +63,13 @@
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
     <script>
-        var auth; // firebase auth initialize
+        // Mark : - variables
+        var auth, // 인증
+            database, // 데이터베이스
+            userInfo  // 사용자 정보
+            ;
 
-        // Initialize Firebase
+        // Mark : - Initialize Firebase
         var config = {
             apiKey: "AIzaSyAP5SgJC6cgchQYXe5boICVgd1nqg8Iy8E",
             authDomain: "memowebapp-59859.firebaseapp.com",
@@ -75,11 +79,14 @@
             messagingSenderId: "1024147805101"
         };
         firebase.initializeApp(config);
-
         // Initialize End
 
-        // auth
+        // Mark : - Variables Initialize
         auth = firebase.auth();
+        database = firebase.database();
+        // Variables Initialize End
+
+        // Mark - Logics
         var authProvider = new firebase.auth.GoogleAuthProvider();
 
         auth.onAuthStateChanged(function(user){
@@ -88,6 +95,8 @@
                 console.log('success');
                 console.log(user); // 로그인한 유저의 정보를 가져옵니다.
                 // 메모 리스트 출력
+                userInfo = user;
+                getMemoList();
 
             } else {
                 // 인증 실패
@@ -95,6 +104,87 @@
                 auth.signInWithPopup(authProvider); // 새 창으로 구글 로그인창을 띄웁니다.
             }
         });
+
+        // Mark : - Functions
+
+        // 메모 리스트를 가져오는 함수
+        function getMemoList() {
+            var memoRef = database.ref('memos/' + userInfo.uid) // memos 에 있는 uid에 접근하겠다는 의미
+            memoRef.on('child_added', onChildAdded );
+            /*
+                데이터가 이런 모습으로 만들어진다. 비동기식 콜백으로 json 데이터를 가져옴.
+            {
+                memos : {
+                    uid : {text : "text", created_at: "data", content: "text"},
+                    uid : {text : "text", created_at: "data", content: "text"},
+                    uid : {text : "text", created_at: "data", content: "text"}
+                    ...
+            }
+
+            }
+            */
+        }
+
+        //
+        function onChildAdded(data) {
+            /* memo의 데이터 구조
+                {
+                    txt: "메모의 본문",
+                    updated_at: "업데이트된 시간",
+                    created_at: "생성 시간"
+                }
+            */
+
+            var key = data.key;
+            var memoData = data.val();
+            var txt = memoData.txt;
+            var title = memoData.title;
+            var firstTxt = txt.substr(0, 1); //첫 번째 글자를 가져옴
+
+            var html =
+             "<li id='"+key+"' class=\"collection-item avatar\" onclick=\"fn_get_data_one(this.id);\" >" +
+             "<i class=\"material-icons circle red\">" + firstTxt + "</i>" + //아이콘 - 첫 번째 글짜로 아이콘을 만듬
+             "<span class=\"title\">" + title + "</span>" + // 제목
+             "<p class='txt'>" + txt + "<br>" +    // 내용
+             "</p>" +
+             "</li>";
+
+             $(".collection").append(html);
+        }
+
+        //
+        function fn_get_data_one(key) {
+            var memoRef = database.ref('memos/'+userInfo.uid+'/'+key).once('value').then(function(snapshot){
+                $(".textarea").val(snapshot.val().txt); // txt 값을 가져와서 텍스트 에리어에 출력
+            }); // 한 건만 가져온다
+
+        }
+
+        // 받아온 값을 firebase 에 저장합니다.
+        function saveData() {
+            var memoRef = database.ref('memos/'+userInfo.uid);
+            var txt = $(".textarea").val();
+
+            // 아무 텍스트가 없으면 저장되지 않도록
+            if ( txt == ''){
+                return;
+            }
+
+            // push 함수를 이용하여 저장할 것입니다.
+            memoRef.push({
+                txt : txt,
+                created_at : new Date().getTime()
+            });
+        }
+
+        // 텍스트 에리어에 있는 값을 saveData()함수로 보냅니다.
+        $(function() {
+            $(".textarea").blur(function(){
+                saveData();
+            });
+        });
+
+
 
     </script>
     </body>
